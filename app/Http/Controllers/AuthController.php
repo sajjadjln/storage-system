@@ -33,15 +33,21 @@ class AuthController extends Controller
 
     public function logIn(LoginRequest $request, AuthService $authService)
     {
-
-        $authServResp = $authService->login($request->email, $request->password);
-        if ($authServResp == -1) {
-            return response()->json(
-                ["message" => "the provided credintials are wrongs"],
-                Response::HTTP_UNAUTHORIZED
-            );
+        try {
+            $authServResp = $authService->login($request->email, $request->password);
+            if ($authServResp == -1) {
+                return response()->json(
+                    ["message" => "the provided credintials are wrongs"],
+                    Response::HTTP_UNAUTHORIZED
+                );
+            }
+            return new AuthResource($authServResp);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'login failed',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return new AuthResource($authServResp);
     }
 
     public function logOut(Request $request)
