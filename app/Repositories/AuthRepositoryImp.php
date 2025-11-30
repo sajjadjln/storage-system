@@ -18,6 +18,11 @@ class AuthRepositoryImp implements IAuthRepository
 
     public function create($email, $password, $username)
     {
+        $existingUser = $this->findByEmail($email);
+        if ($existingUser) {
+            throw new \Exception('Email already registered', 409);
+        }
+
         return DB::transaction(function () use ($email, $password, $username) {
             $user = $this->user->create([
                 "email" => $email,

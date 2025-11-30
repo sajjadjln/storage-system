@@ -25,7 +25,7 @@ class AuthResource extends JsonResource
     {
         return [
             'success' => true,
-            'message' => 'Registration successful',
+            'message' => 'login successful',
         ];
     }
 }

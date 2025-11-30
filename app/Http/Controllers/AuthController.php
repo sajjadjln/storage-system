@@ -24,6 +24,13 @@ class AuthController extends Controller
                 ->setStatusCode(Response::HTTP_CREATED);
 
         } catch (\Exception $e) {
+
+            if ($e->getCode() == '409') {
+                return response()->json([
+                    'message' => 'Email already registered',
+                    'error' => $e->getMessage()
+                ], Response::HTTP_CONFLICT);
+            }
             return response()->json([
                 'message' => 'Registration failed',
                 'error' => $e->getMessage()
@@ -37,7 +44,7 @@ class AuthController extends Controller
             $authServResp = $authService->login($request->email, $request->password);
             if ($authServResp == -1) {
                 return response()->json(
-                    ["message" => "the provided credintials are wrongs"],
+                    ["message" => "the provided credentials are wrong"],
                     Response::HTTP_UNAUTHORIZED
                 );
             }
